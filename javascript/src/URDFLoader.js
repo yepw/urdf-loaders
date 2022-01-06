@@ -654,8 +654,22 @@ class URDFLoader {
 
         } else {
 
-            console.warn(`URDFLoader: Could not load model at ${ path }.\nNo loader available`);
-
+            // for generated object urls
+            if (/\.stlX$/i.test(path)) {
+                const loader = new STLLoader(manager);
+                // console.log(path.replace(".stlX", ""));
+                loader.load(path.replace(".stlX", ""), geom => {
+                    const mesh = new THREE.Mesh(geom, new THREE.MeshPhongMaterial());
+                    done(mesh);
+                });
+            } else if (/\.daeX$/i.test(path)) {
+                const loader = new ColladaLoader(manager);
+                // console.log(path.replace(".daeX", ""));
+                loader.load(path.replace(".daeX", ""), dae => done(dae.scene));
+            }
+            else {
+                console.warn(`URDFLoader: Could not load model at ${ path }.\nNo loader available`);
+            }
         }
 
     }

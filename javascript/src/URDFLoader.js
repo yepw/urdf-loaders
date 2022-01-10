@@ -435,19 +435,18 @@ class URDFLoader {
 
                 const collisionNodes = children.filter(n => n.nodeName.toLowerCase() === 'collision');
                 collisionNodes.forEach(cn => {
-
                     const c = processLinkElement(cn);
+                    c.visible = false;
                     target.add(c);
-
+                    let name;
                     if (cn.hasAttribute('name')) {
-
-                        const name = cn.getAttribute('name');
-                        c.name = name;
-                        c.urdfName = name;
-                        colliderMap[name] = c;
-
-                    }
-
+                        name = cn.getAttribute('name');
+                    } else if (link.hasAttribute('name')) {
+                        name = link.getAttribute('name');
+                    } 
+                    c.name = name;
+                    c.urdfName = name;
+                    colliderMap[name] = c;
                 });
 
             }
@@ -638,7 +637,7 @@ class URDFLoader {
 
     // Default mesh loading function
     defaultMeshLoader(path, manager, done) {
-
+        
         if (/\.stl$/i.test(path)) {
 
             const loader = new STLLoader(manager);
